@@ -2,13 +2,16 @@ import { useState } from "react"
 
 const useTrackLocation = () => {
   const [locationErrorMsg, setLocationErrorMsg] = useState("")
-  const [latlong, setLatlong] = useState("")
+  const [coordinate, setCoordinate] = useState({})
   const [isFindingLoc, setIsFindingLoc] = useState(false)
 
+  console.log("ajaba")
+
   const success = position => {
-    const latitude = position.coords.latitude
-    const longitude = position.coords.longitude
-    setLatlong(`${latitude},${longitude}`)
+    const lat = position.coords.latitude
+    const lon = position.coords.longitude
+    console.log("lat", lat)
+    setCoordinate({ lat, lon })
     setLocationErrorMsg("")
     setIsFindingLoc(false)
   }
@@ -26,7 +29,7 @@ const useTrackLocation = () => {
   }
 
   return {
-    latlong,
+    coordinate,
     handleTrackLocation,
     locationErrorMsg,
     isFindingLoc
