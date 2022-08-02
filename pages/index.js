@@ -1,3 +1,4 @@
+import { useContext } from "react"
 import Head from "next/head"
 import Image from "next/image"
 import Banner from "../components/banner"
@@ -8,6 +9,7 @@ import { fetchCoffeeStores } from "../lib/coffee-stores"
 import placeImage from "../public/static/images/place.jpg"
 import useTrackLocation from "../hooks/use-track-location"
 import { useEffect, useState } from "react"
+import { StoreContext, ACTION_TYPES } from "./_app"
 
 export async function getStaticProps() {
   const coffeeStores = await fetchCoffeeStores()
@@ -19,20 +21,27 @@ export async function getStaticProps() {
 }
 
 export default function Home(props) {
-  const { handleTrackLocation, coordinate, locationErrorMsg, isFindingLoc } = useTrackLocation()
-  const [coffeeStores, setCoffeeStores] = useState([])
+  const { handleTrackLocation, locationErrorMsg, isFindingLoc } = useTrackLocation()
+  // const [coffeeStores, setCoffeeStores] = useState([])
+  const { state, dispatch } = useContext(StoreContext)
+  const { coordinate, coffeeStores } = state
   const [coffeeStoresError, setCoffeeStoresError] = useState(null)
+  // CSR
   const fetchData = async () => {
     try {
-      const fetchResult = await fetchCoffeeStores(coordinate, 30) // CSR
-      setCoffeeStores(fetchResult)
+      const fetchResult = await fetchCoffeeStores(coordinate, 30)
+      // setCoffeeStores(fetchResult)
+      dispatch({
+        type: ACTION_TYPES.SET_COFFEE_STORES,
+        payload: fetchResult
+      })
     } catch (error) {
       console.log(error)
       setCoffeeStoresError(error.message)
     }
   }
   useEffect(() => {
-    if (Object.keys(coordinate).length > 0) {
+    if (coordinate?.lat) {
       fetchData()
     }
   }, [coordinate])

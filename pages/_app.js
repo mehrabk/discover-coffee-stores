@@ -1,7 +1,7 @@
 import React, { useReducer } from "react"
 import "../styles/globals.css"
 
-const ACTION_TYPES = {
+export const ACTION_TYPES = {
   SET_COORDINATE: "SET_COORDINATE",
   SET_COFFEE_STORES: "SET_COFFEE_STORES"
 }
@@ -21,7 +21,7 @@ const storeReducer = (state, action) => {
   }
 }
 
-const StoreContext = React.createContext()
+export const StoreContext = React.createContext()
 
 const StoreProvider = ({ children }) => {
   const initalState = {

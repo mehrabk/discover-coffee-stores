@@ -1,8 +1,10 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
+import { ACTION_TYPES, StoreContext } from "../pages/_app"
 
 const useTrackLocation = () => {
   const [locationErrorMsg, setLocationErrorMsg] = useState("")
-  const [coordinate, setCoordinate] = useState({})
+  // const [coordinate, setCoordinate] = useState({})
+  const { dispatch } = useContext(StoreContext)
   const [isFindingLoc, setIsFindingLoc] = useState(false)
 
   console.log("ajaba")
@@ -11,7 +13,8 @@ const useTrackLocation = () => {
     const lat = position.coords.latitude
     const lon = position.coords.longitude
     console.log("lat", lat)
-    setCoordinate({ lat, lon })
+    // setCoordinate({ lat, lon })
+    dispatch({ type: ACTION_TYPES.SET_COORDINATE, payload: { lat, lon } })
     setLocationErrorMsg("")
     setIsFindingLoc(false)
   }
@@ -29,7 +32,7 @@ const useTrackLocation = () => {
   }
 
   return {
-    coordinate,
+    // coordinate,
     handleTrackLocation,
     locationErrorMsg,
     isFindingLoc
