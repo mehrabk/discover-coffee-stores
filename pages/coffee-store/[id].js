@@ -4,19 +4,25 @@ import Link from "next/link"
 import Head from "next/head"
 import Image from "next/image"
 import cls from "classnames"
-import coffeeStoresData from "../../data/coffee-stores.json"
+
 import styles from "../../styles/coffee-store.module.css"
+import { fetchCoffeeStores } from "../../lib/coffee-stores"
 
 export async function getStaticProps(staticProps) {
   const { params } = staticProps
+  const coffeeStoresData = await fetchCoffeeStores()
+  console.log(coffeeStoresData)
+
   return {
     props: {
-      coffeeStore: coffeeStoresData.find(coffeeStore => coffeeStore.id === Number(params.id))
+      coffeeStore: coffeeStoresData.find(coffeeStore => Number(coffeeStore.id) === Number(params.id))
     }
   }
 }
 
-export async function getStaticPaths(props) {
+export async function getStaticPaths() {
+  const coffeeStoresData = await fetchCoffeeStores()
+
   const paths = coffeeStoresData.map(coffeeStore => {
     return {
       params: {
@@ -39,7 +45,7 @@ const CoffeeStore = props => {
     return <div>loading ...</div>
   }
 
-  const { address, name, neighbourhood, imgUrl } = props.coffeeStore
+  const { address, poi, info } = props.coffeeStore
 
   const handleUpvoteButton = () => {
     console.log("up vote...")
@@ -48,31 +54,37 @@ const CoffeeStore = props => {
   return (
     <div className={styles.layout}>
       <Head>
-        <title>{name}</title>
+        <title>{poi.name}</title>
       </Head>
       <div className={styles.container}>
         <div className={styles.col1}>
           <div className={styles.backToHomeLink}>
             <Link href={"/"}>
-              <a>Back to home</a>
+              <a>⬅️Back to home</a>
             </Link>
           </div>
 
           <div className={styles.nameWrapper}>
-            <h1 className={styles.name}>{name}</h1>
+            <h1 className={styles.name}>{poi.name}</h1>
           </div>
 
-          <Image src={imgUrl} width={600} height={360} className={styles.storeImg} alt={name} />
+          <Image
+            src="/static/images/place.jpg"
+            width={600}
+            height={360}
+            className={styles.storeImg}
+            alt={poi.name}
+          />
         </div>
 
         <div className={cls("glass", styles.col2)}>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/location.svg" width={30} height={24} />
-            <p className={styles.text}>{address}</p>
+            <p className={styles.text}>{address.municipality}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/pin.svg" width={30} height={24} />
-            <p className={styles.text}>{neighbourhood}</p>
+            <p className={styles.text}>{info}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width={30} height={24} />
