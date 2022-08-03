@@ -9,7 +9,7 @@ import { fetchCoffeeStores } from "../lib/coffee-stores"
 import placeImage from "../public/static/images/place.jpg"
 import useTrackLocation from "../hooks/use-track-location"
 import { useEffect, useState } from "react"
-import { StoreContext, ACTION_TYPES } from "./_app"
+import { StoreContext, ACTION_TYPES } from "../store/store-context"
 
 export async function getStaticProps() {
   const coffeeStores = await fetchCoffeeStores()

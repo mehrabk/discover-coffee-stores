@@ -1,13 +1,11 @@
 import { useState, useContext } from "react"
-import { ACTION_TYPES, StoreContext } from "../pages/_app"
+import { ACTION_TYPES, StoreContext } from "../store/store-context"
 
 const useTrackLocation = () => {
   const [locationErrorMsg, setLocationErrorMsg] = useState("")
   // const [coordinate, setCoordinate] = useState({})
   const { dispatch } = useContext(StoreContext)
   const [isFindingLoc, setIsFindingLoc] = useState(false)
-
-  console.log("ajaba")
 
   const success = position => {
     const lat = position.coords.latitude
