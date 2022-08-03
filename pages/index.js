@@ -27,10 +27,15 @@ export default function Home(props) {
   const { coordinate, coffeeStores } = state
   const [coffeeStoresError, setCoffeeStoresError] = useState(null)
 
+  // fetch data from client (CSR)
   const fetchData = async () => {
     try {
-      const fetchResult = await fetchCoffeeStores(coordinate, 30)
-      // setCoffeeStores(fetchResult)
+      const response = await fetch(
+        `/api/getCoffeeStoresByLocation?lat=${coordinate.lat}&lon=${coordinate.lon}&limit=30`
+      )
+      const fetchResult = await response.json()
+      console.log(fetchResult)
+
       dispatch({
         type: ACTION_TYPES.SET_COFFEE_STORES,
         payload: fetchResult
