@@ -39,26 +39,27 @@ export async function getStaticProps(staticProps) {
 }
 
 const CoffeeStore = props => {
-  console.log("CoffeeStore Porops (SSG) = ", props)
+  console.log("CoffeeStore props (SSG) = ", props)
   const router = useRouter()
-
-  if (router.isFallback) {
-    return <div>loading ...</div>
-  }
+  const id = router.query.id
 
   const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore)
-  const id = router.query.id
   const { state } = useContext(StoreContext)
   const { coffeeStores } = state
 
   useEffect(() => {
     if (isEmpty(props.coffeeStore)) {
+      console.log("asdasdasdas")
       const result = coffeeStores.find(coffeeStore => Number(coffeeStore.id) === Number(id))
       setCoffeeStore(result)
     }
   }, [id])
 
-  const { address, poi, info } = props.coffeeStore
+  if (router.isFallback) {
+    return <div>loading ...</div>
+  }
+
+  const { address, poi, info } = coffeeStore
 
   const handleUpvoteButton = () => {
     console.log("up vote...")
@@ -67,7 +68,7 @@ const CoffeeStore = props => {
   return (
     <div className={styles.layout}>
       <Head>
-        <title>{poi?.name || "test"}</title>
+        <title>{poi?.name}</title>
       </Head>
       <div className={styles.container}>
         <div className={styles.col1}>
@@ -78,7 +79,7 @@ const CoffeeStore = props => {
           </div>
 
           <div className={styles.nameWrapper}>
-            <h1 className={styles.name}>{poi?.name || "test"}</h1>
+            <h1 className={styles.name}>{poi?.name}</h1>
           </div>
 
           <Image
@@ -86,18 +87,18 @@ const CoffeeStore = props => {
             width={600}
             height={360}
             className={styles.storeImg}
-            alt={poi?.name || "test"}
+            alt={poi?.name}
           />
         </div>
 
         <div className={cls("glass", styles.col2)}>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/location.svg" width={30} height={24} />
-            <p className={styles.text}>{address?.municipality || "test"}</p>
+            <p className={styles.text}>{address?.municipality}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/pin.svg" width={30} height={24} />
-            <p className={styles.text}>{info || "test"}</p>
+            <p className={styles.text}>{info}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width={30} height={24} />

@@ -26,7 +26,7 @@ export default function Home(props) {
   const { state, dispatch } = useContext(StoreContext)
   const { coordinate, coffeeStores } = state
   const [coffeeStoresError, setCoffeeStoresError] = useState(null)
-  // CSR
+
   const fetchData = async () => {
     try {
       const fetchResult = await fetchCoffeeStores(coordinate, 30)
