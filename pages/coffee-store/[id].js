@@ -81,8 +81,10 @@ const CoffeeStore = props => {
           handleCreateCoffeeStore(CoffeeStoreFromContext)
         }
       }
+    } else {
+      handleCreateCoffeeStore(props.coffeeStore)
     }
-  }, [id])
+  }, [id, props, props.coffeeStore])
 
   const { address, poi, info } = coffeeStore
 
