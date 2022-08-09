@@ -43,21 +43,46 @@ const CoffeeStore = props => {
   const router = useRouter()
   const id = router.query.id
 
-  const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore)
-  const { state } = useContext(StoreContext)
-  const { coffeeStores } = state
-
-  useEffect(() => {
-    if (isEmpty(props.coffeeStore)) {
-      console.log("asdasdasdas")
-      const result = coffeeStores.find(coffeeStore => Number(coffeeStore.id) === Number(id))
-      setCoffeeStore(result)
-    }
-  }, [id])
-
   if (router.isFallback) {
     return <div>loading ...</div>
   }
+
+  const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore || {})
+  const { state } = useContext(StoreContext)
+  const { coffeeStores } = state
+
+  const handleCreateCoffeeStore = async coffeeStore => {
+    try {
+      const response = await fetch("/api/createCoffeeStore", {
+        method: "POST",
+        body: JSON.stringify({
+          id: coffeeStore.id,
+          name: coffeeStore.poi.name,
+          address: coffeeStore.address.freeformAddress,
+          neighbourhood: coffeeStore.info || "",
+          imgURL: "http://image.com",
+          voting: 0
+        }),
+        headers: { "Content-Type": "application/json" }
+      })
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (isEmpty(props.coffeeStore)) {
+      if (coffeeStores.length > 0) {
+        console.log("asdasdasdas")
+        const CoffeeStoreFromContext = coffeeStores.find(coffeeStore => Number(coffeeStore.id) === Number(id))
+        if (CoffeeStoreFromContext) {
+          setCoffeeStore(CoffeeStoreFromContext)
+          handleCreateCoffeeStore(CoffeeStoreFromContext)
+        }
+      }
+    }
+  }, [id])
 
   const { address, poi, info } = coffeeStore
 
@@ -94,7 +119,7 @@ const CoffeeStore = props => {
         <div className={cls("glass", styles.col2)}>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/location.svg" width={30} height={24} />
-            <p className={styles.text}>{address?.municipality}</p>
+            <p className={styles.text}>{address?.freeformAddress}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/pin.svg" width={30} height={24} />
