@@ -86,7 +86,7 @@ const CoffeeStore = props => {
     }
   }, [id, props, props.coffeeStore])
 
-  const { address, poi, info } = coffeeStore
+  const { address, poi, info } = coffeeStore 
 
   const handleUpvoteButton = () => {
     console.log("up vote...")
