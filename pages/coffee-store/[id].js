@@ -4,11 +4,12 @@ import Link from "next/link"
 import Head from "next/head"
 import Image from "next/image"
 import cls from "classnames"
+import useSWR from "swr"
 
 import styles from "../../styles/coffee-store.module.css"
 import { fetchCoffeeStores } from "../../lib/coffee-stores"
 import { StoreContext } from "../../store/store-context"
-import { isEmpty } from "../../utils"
+import { fetcher, isEmpty } from "../../utils"
 
 export async function getStaticPaths(props) {
   console.log("getStaticPaths = ", props)
@@ -82,11 +83,25 @@ const CoffeeStore = props => {
         }
       }
     } else {
+      //SSG
       handleCreateCoffeeStore(props.coffeeStore)
     }
   }, [id, props, props.coffeeStore])
 
-  const { address, poi, info } = coffeeStore 
+  const { address, poi, info } = coffeeStore
+
+  const [votingCount, setVotingCount] = useState()
+
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=840061001998942`, fetcher)
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setCoffeeStore(data[0])
+      setVotingCount(data[0].voting)
+    }
+  }, [data])
+
+  if (error) return <p>Somithing went wrong while retrieving coffee store page </p>
 
   const handleUpvoteButton = () => {
     console.log("up vote...")
@@ -129,7 +144,7 @@ const CoffeeStore = props => {
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width={30} height={24} />
-            <p className={styles.text}>1</p>
+            <p className={styles.text}>{votingCount}</p>
           </div>
 
           <button className={styles.upvoteButton} onClick={handleUpvoteButton}>

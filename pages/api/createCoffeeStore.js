@@ -8,7 +8,7 @@ const createCoffeeStore = async (req, res) => {
 
       const records = await findRecordByFilter(id)
       if (records.length !== 0) {
-        res.json(records)
+        return res.json(records)
       } else {
         // create record
         const createRecords = await table.create([
