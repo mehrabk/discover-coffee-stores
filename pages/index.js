@@ -84,7 +84,7 @@ export default function Home(props) {
                     key={coffeeStore.id}
                     href={`/coffee-store/${coffeeStore.id}`}
                     imgUrl={coffeeStore.imgUrl || placeImage}
-                    name={coffeeStore.poi.name}
+                    name={coffeeStore.name}
                   />
                 )
               })}
@@ -102,7 +102,7 @@ export default function Home(props) {
                     key={coffeeStore.id}
                     href={`/coffee-store/${coffeeStore.id}`}
                     imgUrl={coffeeStore.imgUrl || placeImage}
-                    name={coffeeStore.poi.name}
+                    name={coffeeStore.name}
                   />
                 )
               })}

@@ -29,6 +29,7 @@ export async function getStaticPaths(props) {
 
 export async function getStaticProps(staticProps) {
   console.log("getStaticProps = ", staticProps)
+
   const { params } = staticProps
   const coffeeStoresData = await fetchCoffeeStores()
 
@@ -56,14 +57,7 @@ const CoffeeStore = props => {
     try {
       const response = await fetch("/api/createCoffeeStore", {
         method: "POST",
-        body: JSON.stringify({
-          id: coffeeStore.id,
-          name: coffeeStore.poi.name,
-          address: coffeeStore.address.freeformAddress,
-          neighbourhood: coffeeStore.info || "",
-          imgURL: "http://image.com",
-          voting: 0
-        }),
+        body: JSON.stringify(coffeeStore),
         headers: { "Content-Type": "application/json" }
       })
       console.log(response)
@@ -88,14 +82,16 @@ const CoffeeStore = props => {
     }
   }, [id, props, props.coffeeStore])
 
-  const { address, poi, info } = coffeeStore
+  const { name, address, neighbourhood, voting, imgURL } = coffeeStore
+  console.log({ name })
 
   const [votingCount, setVotingCount] = useState()
 
-  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=840061001998942`, fetcher)
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher)
 
   useEffect(() => {
     if (data && data.length > 0) {
+      console.log("data", data[0])
       setCoffeeStore(data[0])
       setVotingCount(data[0].voting)
     }
@@ -103,14 +99,31 @@ const CoffeeStore = props => {
 
   if (error) return <p>Somithing went wrong while retrieving coffee store page </p>
 
-  const handleUpvoteButton = () => {
+  const handleUpvoteButton = async () => {
+    try {
+      const upVoteResponse = await fetch("/api/favoriteCoffeeStoreById", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id
+        })
+      })
+
+      const upVoteResult = await upVoteResponse.json()
+      console.log(upVoteResult)
+      setVotingCount(votingCount + 1)
+    } catch (error) {
+      console.log("UpVoting Error", error)
+    }
     console.log("up vote...")
   }
 
   return (
     <div className={styles.layout}>
       <Head>
-        <title>{poi?.name}</title>
+        <title>{name}</title>
       </Head>
       <div className={styles.container}>
         <div className={styles.col1}>
@@ -121,7 +134,7 @@ const CoffeeStore = props => {
           </div>
 
           <div className={styles.nameWrapper}>
-            <h1 className={styles.name}>{poi?.name}</h1>
+            <h1 className={styles.name}>{name}</h1>
           </div>
 
           <Image
@@ -129,18 +142,18 @@ const CoffeeStore = props => {
             width={600}
             height={360}
             className={styles.storeImg}
-            alt={poi?.name}
+            alt={name}
           />
         </div>
 
         <div className={cls("glass", styles.col2)}>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/location.svg" width={30} height={24} />
-            <p className={styles.text}>{address?.freeformAddress}</p>
+            <p className={styles.text}>{address}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/pin.svg" width={30} height={24} />
-            <p className={styles.text}>{info}</p>
+            <p className={styles.text}>{neighbourhood}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width={30} height={24} />
