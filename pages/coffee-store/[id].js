@@ -45,10 +45,6 @@ const CoffeeStore = props => {
   const router = useRouter()
   const id = router.query.id
 
-  if (router.isFallback) {
-    return <div>loading ...</div>
-  }
-
   const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore || {})
   const { state } = useContext(StoreContext)
   const { coffeeStores } = state
@@ -68,13 +64,15 @@ const CoffeeStore = props => {
 
   useEffect(() => {
     if (isEmpty(props.coffeeStore)) {
-      if (coffeeStores.length > 0) {
+      if (coffeeStores?.length > 0) {
         console.log("asdasdasdas")
         const CoffeeStoreFromContext = coffeeStores.find(coffeeStore => Number(coffeeStore.id) === Number(id))
         if (CoffeeStoreFromContext) {
           setCoffeeStore(CoffeeStoreFromContext)
           handleCreateCoffeeStore(CoffeeStoreFromContext)
         }
+      } else {
+        console.log("CTX Is Empty (when reload page)")
       }
     } else {
       //SSG
@@ -85,7 +83,7 @@ const CoffeeStore = props => {
   const { name, address, neighbourhood, voting, imgURL } = coffeeStore
   console.log({ name })
 
-  const [votingCount, setVotingCount] = useState()
+  const [votingCount, setVotingCount] = useState(0)
 
   const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher)
 
@@ -96,6 +94,10 @@ const CoffeeStore = props => {
       setVotingCount(data[0].voting)
     }
   }, [data])
+
+  if (router.isFallback) {
+    return <div>loading ...</div>
+  }
 
   if (error) return <p>Somithing went wrong while retrieving coffee store page </p>
 
