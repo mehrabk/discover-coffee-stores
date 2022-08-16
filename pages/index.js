@@ -61,6 +61,7 @@ export default function Home(props) {
       <Head>
         <title>Coffee Connoisseur</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="discover nearby places"></meta>
       </Head>
 
       <main className={styles.main}>
@@ -71,7 +72,7 @@ export default function Home(props) {
         {locationErrorMsg && <p>Something went wrong: {locationErrorMsg}</p>}
         {coffeeStoresError && <p>Coffee Stores Fetching Error: {coffeeStoresError}</p>}
         <div className={styles.heroImage}>
-          <Image src="/static/images/hero-image.png" width={700} height={400} />
+          <Image src="/static/images/hero-image.png" width="700" height="400" alt="hero-image" />
         </div>
         {/*Client Side Rendering(CSR)*/}
         {coffeeStores.length > 0 && (
